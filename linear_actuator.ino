@@ -9,7 +9,7 @@ https://shiftautomation.com/control-linear-actuator-with-arduino-and-relays
 const int relay1 = 6;   //Arduino pin that triggers relay #1
 const int relay2 = 7;   //Arduino pin that triggers relay #2
 
-void setup_la() {
+void setup() {
   //Set pinMode to OUTPUT for the two relay pins
   pinMode(relay1, OUTPUT);
   pinMode(relay2, OUTPUT);
@@ -34,7 +34,7 @@ void stopActuator() {
 
 //Test (does the linear actuator work)
 //This will make the actuator extend out for 1 second, then stop for 1 second, then retract for 1 second, and then pause for 5 seconds.
-void loop_la() {
+void loop() {
     extendActuator();
     delay(1000);
 

@@ -8,11 +8,11 @@
   https://playground.arduino.cc/Main/FlightGearInputPot/
  */
  
-void setup_p() {
+void setup() {
   Serial.begin(9600);
 }
  
-void loop_p() {
+void loop() {
   int sensorValue = analogRead(A0);
   Serial.println(sensorValue);
 }
