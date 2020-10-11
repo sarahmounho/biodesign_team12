@@ -1,3 +1,5 @@
 {
-    "sketch": "potentiometer.ino"
+    "sketch": "display.ino",
+    "board": "arduino:avr:nano",
+    "configuration": "cpu=atmega328"
 }
