@@ -3,12 +3,12 @@
 int red_light_pin= 11;
 int green_light_pin = 10;
 int blue_light_pin = 9;
-void setup() {
+void setup_led() {
   pinMode(red_light_pin, OUTPUT);
   pinMode(green_light_pin, OUTPUT);
   pinMode(blue_light_pin, OUTPUT);
 }
-void loop() {
+void loop_led() {
   RGB_color(255, 0, 0); // Red
   delay(1000);
   RGB_color(0, 255, 0); // Green
