@@ -87,11 +87,8 @@ void loop() {
         for (int i = 0; i < 99; i++) {
             Serial.print(pain_array[i]);
         }
-        
     }
     
-
-
 
     }
     delay(1000); // 1 second wait to stabalize

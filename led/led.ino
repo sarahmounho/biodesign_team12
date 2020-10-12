@@ -1,8 +1,8 @@
 /* https://create.arduino.cc/projecthub/muhammad-aqib/arduino-rgb-led-tutorial-fc003e */
 
-int red_light_pin= 11;
-int green_light_pin = 10;
-int blue_light_pin = 9;
+int red_light_pin= 3;
+int green_light_pin = 4;
+int blue_light_pin = 5;
 void setup() {
   pinMode(red_light_pin, OUTPUT);
   pinMode(green_light_pin, OUTPUT);
