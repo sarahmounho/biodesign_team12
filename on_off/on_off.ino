@@ -4,8 +4,8 @@ On/Off with LED https://create.arduino.cc/projecthub/reverendfuzzy/simple-on-off
 #include <stdio.h>
 #include <stdlib.h>
 
-const int button = 8;            // GPIO 8 for the button
-const int led =7;                // GPIO 7 for the LED
+const int button = 2;            // GPIO 8 for the button
+const int led = A2;                // GPIO 7 for the LED
 int ledflag=0;                   // LED status flag
 
 void setup() {
@@ -15,6 +15,7 @@ void setup() {
 }
 
 void loop() {
+  Serial.println(digitalRead(button));
   if (digitalRead(button)==HIGH){ // if button is pressed
     if (ledflag==0) {             // and the status flag is LOW
       ledflag=1;                  // make status flag HIGH
