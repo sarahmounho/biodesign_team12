@@ -36,13 +36,13 @@ void stopActuator() {
 //This will make the actuator extend out for 1 second, then stop for 1 second, then retract for 1 second, and then pause for 5 seconds.
 void loop() {
     extendActuator();
-    delay(1000);
+    delay(250);
 
     stopActuator();
     delay(1000);
 
     retractActuator();
-    delay(1000);
+    delay(250);
 
     stopActuator();
     delay(5000);
