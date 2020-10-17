@@ -198,13 +198,13 @@ void fsr_exam(){
     // analog voltage reading ranges from about 0 to 1023 which maps to 0V to 3.3V (= 3300 mV)
     int fsrVoltage = map(fsrReading, 0, 1023, 0, 3300);
     // Graph on LCD
-    int graphHeightFSR = map(fsr, 0, 1023, 0, tft.height());
+    int graphHeightFSR = map(fsrVoltage, 0, 1023, 0, tft.height());
     tft.drawPixel(xPos, tft.height() - graphHeightFSR, ST7735_CYAN);
     if (xPos > 20){
         tft.drawLine(prevXPressure, prevYPressure, xPos, tft.height() - graphHeightFSR, ST7735_CYAN);
     }
     prevXPressure = xPos;
-    prevYPressure = tft.height - graphHeightFSR;
+    prevYPressure = (tft.height() - graphHeightFSR);
 
     // Probably don't include in test, but should be included in validation
     unsigned long fsrResistance = 3300 - fsrVoltage; // fsrVoltage in mV
@@ -255,11 +255,11 @@ void pain_smooth(){
     // Graph on LCD
     int graphHeight = map(avgPain,0,1023,0,tft.height());
     tft.drawPixel(xPos, tft.height() - graphHeight, ST7735_MAGENTA);
-    if xPos > 20 {
+    if (xPos > 20) {
         tft.drawLine(prevXPain, prevYPain, xPos, tft.height() - graphHeight, ST7735_MAGENTA);
     }
     prevXPressure = xPos;
-    prevYPressure = tft.height - graphHeight;
+    prevYPressure = (tft.height() - graphHeight);
     if (xPos >= 160) {
         // Restart, ran out of screen space
         LCD_reset(); 
@@ -273,15 +273,18 @@ void LCD_reset(){
     tft.fillScreen(ST77XX_BLACK); // black screen
     testdrawtext("Rebound Tenderness Examination", ST77XX_WHITE); // title
     tft.setCursor(100, 15); // move cursor for legend
-    tft.println("Pain", ST7735_MAGENTA); 
+    tft.setTextColor(ST7735_MAGENTA);
+    tft.println("Pain"); 
     tft.setCursor(100, 15); // shift down for legend part 2
-    tft.println("Pressure", ST7735_CYAN);
+    tft.setTextColor(ST7735_CYAN);
+    tft.println("Pressure");
     tft.setCursor(20, 140); // move cursor for x-axis
     tft.drawLine(20, 140, 120, 140, ST77XX_WHITE); // x-axis
     tft.setCursor(20, 140); // move cursor for y-axis
-    tft.drawLine(20, 140, 20, 40); // y-axis
+    tft.drawLine(20, 140, 20, 40, ST77XX_WHITE); // y-axis
     tft.setCursor(50, 154); // move for x-axis label
-    tft.println("Time", ST77XX_WHITE); // x-axis label
+    tft.setTextColor(ST77XX_WHITE);
+    tft.println("Time"); // x-axis label
 
 
 }
