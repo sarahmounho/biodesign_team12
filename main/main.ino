@@ -77,11 +77,8 @@ void setup(){
 
     // LCD
     tft.initR(INITR_BLACKTAB); // Init ST7735S chip, black tab
-    // large block of text
-    tft.fillScreen(ST77XX_BLACK);
-    //testdrawtext("Pain level during duration of exam", ST77XX_WHITE);
-    delay(1000);
-
+    LCD_reset(); // fill screen with graphics
+    
     // Retract linear actuator to start
     retractActuator();
     delay(2500);
@@ -116,15 +113,15 @@ void loop() {
     
     if (exam_flag==1){
         
-        // potentiometer + graph
-        pain_smooth(); // Helper function
-
         // FSR
         fsr_exam(); // Helper function
 
-        // Extend for 5 seconds 
-        // Pause for 10 seconds
-        // Retract for 5 seconds
+        // potentiometer + graph
+        pain_smooth(); // Helper function
+
+        // Extend for 2.5 seconds 
+        // Pause for 5 seconds
+        // Retract for 2.5 seconds
         // Extend/Retract actuator
         actuator_exam(); // Helper function
     }
@@ -168,22 +165,22 @@ void actuator_exam(){
     Serial.print("exam_len = ");
     Serial.println(exam_len);
 
-    if (exam_len <= 5){
+    if (exam_len < 5){
         extendActuator();
         delay(500); // extend for 0.5 seconds
         exam_len++; // index the exam button 
     }
-    else if (exam_len <= 15){
+    else if (exam_len < 15){
         stopActuator();
         delay(500); 
         exam_len++; // index the exam button
     }
-    else if (exam_len <= 20){
+    else if (exam_len < 20){
         retractActuator();
         delay(500);
         exam_len++; // index the exam button
     }
-    else if (exam_len > 20){
+    else if (exam_len >= 20){
         exam_flag = 0; // exam over
         exam_len = 0; // reset exam timer
         RGB_color(LOW, HIGH, LOW); // Green exam LED
@@ -196,19 +193,22 @@ void fsr_exam(){
     Serial.println("Analog reading = ");
     // analog voltage reading ranges from about 0 to 1023 which maps to 0V to 3.3V (= 3300 mV)
     int fsrVoltage = map(fsrReading, 0, 1023, 0, 3300); 
+    // Graph on LCD
+    int graphHeightFSR = map(fsr,0,1023,0,tft.height());
+    tft.drawPixel(xPos, tft.height() - graphHeight, ST7735_CYAN);
+
+    // Probably don't include in test, but should be included in validation
     unsigned long fsrResistance = 3300 - fsrVoltage; // fsrVoltage in mV
     fsrResistance *= 10000; // 10K resistor
     fsrResistance /= fsrVoltage; 
     unsigned long fsrConductance = 1000000; // measured in microhms
     fsrConductance /= fsrResistance; 
-
+    
     // Use the two FSR guide graphs to approximate the force
     if (fsrConductance <= 1000) {
         int fsrForce = fsrConductance / 80;
         Serial.print("Force in Newtons: ");
         Serial.println(fsrForce);     
-        tft.fillScreen(ST77XX_BLACK);
-        tft.print(fsrForce, ST77XX_WHITE); 
     } else {
         int fsrForce = fsrConductance - 1000;
         fsrForce /= 30;
@@ -245,14 +245,29 @@ void pain_smooth(){
 
     // Graph on LCD
     int graphHeight = map(avgPain,0,1023,0,tft.height());
-    tft.drawPixel(xPos, tft.height() - graphHeight, ST77XX_WHITE);
+    tft.drawPixel(xPos, tft.height() - graphHeight, ST7735_MAGENTA);
     if (xPos >= 160) {
         // Restart, ran out of screen space
-        xPos = 0;
-        tft.fillScreen(ST77XX_BLACK);
-        testdrawtext("Pain level during duration of exam", ST77XX_WHITE);
+        LCD_reset(); 
     } 
     else {
         xPos++; // move on to next position
     }
+}
+void LCD_reset(){
+    xPos = 0; // for analog readings 
+    tft.fillScreen(ST77XX_BLACK); // black screen
+    testdrawtext("Rebound Tenderness Examination", ST77XX_WHITE); // title
+    tft.setCursor(100, 15); // move cursor for legend
+    tft.println("Pain", ST7735_MAGENTA); 
+    tft.setCursor(100, 15); // shift down for legend part 2
+    tft.println("Pressure", ST7735_CYAN);
+    tft.setCursor(20, 140); // move cursor for x-axis
+    tft.drawLine(20, 140, 120, 140, ST77XX_WHITE); // x-axis
+    tft.setCursor(20, 140); // move cursor for y-axis
+    tft.drawLine(20, 140, 20, 40); // y-axis
+    tft.setCursor(50, 154); // move for x-axis label
+    tft.println("Time", ST77XX_WHITE); // x-axis label
+
+
 }
