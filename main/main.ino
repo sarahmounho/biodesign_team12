@@ -39,7 +39,11 @@ int exam_flag = 0; // start/in progress/stop LED
 
 // Plotting set up
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
-int xPos = 0; //starting graph position
+int xPos = 20; //starting graph position
+int prevXPain = 20; 
+int prevYPain = 140;
+int prevXPressure = 20;
+int prevYPressure = 140;
 
 // Linear actuator set up
 int exam_len = 0; 
@@ -78,7 +82,7 @@ void setup(){
     // LCD
     tft.initR(INITR_BLACKTAB); // Init ST7735S chip, black tab
     LCD_reset(); // fill screen with graphics
-    
+
     // Retract linear actuator to start
     retractActuator();
     delay(2500);
@@ -192,10 +196,15 @@ void fsr_exam(){
     int fsrReading = analogRead(FSR); // read pressure level
     Serial.println("Analog reading = ");
     // analog voltage reading ranges from about 0 to 1023 which maps to 0V to 3.3V (= 3300 mV)
-    int fsrVoltage = map(fsrReading, 0, 1023, 0, 3300); 
+    int fsrVoltage = map(fsrReading, 0, 1023, 0, 3300);
     // Graph on LCD
-    int graphHeightFSR = map(fsr,0,1023,0,tft.height());
-    tft.drawPixel(xPos, tft.height() - graphHeight, ST7735_CYAN);
+    int graphHeightFSR = map(fsr, 0, 1023, 0, tft.height());
+    tft.drawPixel(xPos, tft.height() - graphHeightFSR, ST7735_CYAN);
+    if (xPos > 20){
+        tft.drawLine(prevXPressure, prevYPressure, xPos, tft.height() - graphHeightFSR, ST7735_CYAN);
+    }
+    prevXPressure = xPos;
+    prevYPressure = tft.height - graphHeightFSR;
 
     // Probably don't include in test, but should be included in validation
     unsigned long fsrResistance = 3300 - fsrVoltage; // fsrVoltage in mV
@@ -246,6 +255,11 @@ void pain_smooth(){
     // Graph on LCD
     int graphHeight = map(avgPain,0,1023,0,tft.height());
     tft.drawPixel(xPos, tft.height() - graphHeight, ST7735_MAGENTA);
+    if xPos > 20 {
+        tft.drawLine(prevXPain, prevYPain, xPos, tft.height() - graphHeight, ST7735_MAGENTA);
+    }
+    prevXPressure = xPos;
+    prevYPressure = tft.height - graphHeight;
     if (xPos >= 160) {
         // Restart, ran out of screen space
         LCD_reset(); 
@@ -255,7 +269,7 @@ void pain_smooth(){
     }
 }
 void LCD_reset(){
-    xPos = 0; // for analog readings 
+    xPos = 20; // for analog readings 
     tft.fillScreen(ST77XX_BLACK); // black screen
     testdrawtext("Rebound Tenderness Examination", ST77XX_WHITE); // title
     tft.setCursor(100, 15); // move cursor for legend
