@@ -129,7 +129,7 @@ void loop() {
         // Extend/Retract actuator
         actuator_exam(); // Helper function
     }
-    delay(10); // .1 second wait to stabalize
+    delay(10); // .01 second wait to stabalize
 }
 
 // Helper function to write to RGC exam status LED
@@ -169,22 +169,22 @@ void actuator_exam(){
     Serial.print("exam_len = ");
     Serial.println(exam_len);
 
-    if (exam_len < 5){
+    if (exam_len < 25){
         extendActuator();
-        delay(500); // extend for 0.5 seconds
+        delay(100); // extend for 0.1 seconds
         exam_len++; // index the exam button 
     }
-    else if (exam_len < 15){
+    else if (exam_len < 75){
         stopActuator();
-        delay(500); 
+        delay(100); 
         exam_len++; // index the exam button
     }
-    else if (exam_len < 20){
+    else if (exam_len < 100){
         retractActuator();
-        delay(500);
+        delay(100);
         exam_len++; // index the exam button
     }
-    else if (exam_len >= 20){
+    else if (exam_len >= 100){
         exam_flag = 0; // exam over
         exam_len = 0; // reset exam timer
         RGB_color(LOW, HIGH, LOW); // Green exam LED
@@ -198,8 +198,8 @@ void fsr_exam(){
     // analog voltage reading ranges from about 0 to 1023 which maps to 0V to 3.3V (= 3300 mV)
     int fsrVoltage = map(fsrReading, 0, 1023, 0, 3300);
     // Graph on LCD
-    int graphHeightFSR = map(fsrVoltage, 0, 1023, 0, tft.height());
-    tft.drawPixel(xPos, tft.height() - graphHeightFSR, ST7735_CYAN);
+    int graphHeightFSR = map(fsrVoltage, 0, 1023,40, tft.height()-20);
+    tft.drawPixel(xPos, tft.height() - 20 - graphHeightFSR, ST7735_CYAN);
     if (xPos > 20){
         tft.drawLine(prevXPressure, prevYPressure, xPos, tft.height() - graphHeightFSR, ST7735_CYAN);
     }
@@ -253,13 +253,13 @@ void pain_smooth(){
     Serial.println(avgPain); // print pain level on screen
 
     // Graph on LCD
-    int graphHeight = map(avgPain,0,1023,0,tft.height());
+    int graphHeight = map(avgPain,0,1023, 40, tft.height()-20);
     tft.drawPixel(xPos, tft.height() - graphHeight, ST7735_MAGENTA);
     if (xPos > 20) {
-        tft.drawLine(prevXPain, prevYPain, xPos, tft.height() - graphHeight, ST7735_MAGENTA);
+        tft.drawLine(prevXPain, prevYPain, xPos, tft.height() - 20 - graphHeight, ST7735_MAGENTA);
     }
     prevXPressure = xPos;
-    prevYPressure = (tft.height() - graphHeight);
+    prevYPressure = (tft.height() - 20 - graphHeight);
     if (xPos >= 160) {
         // Restart, ran out of screen space
         LCD_reset(); 
@@ -271,20 +271,18 @@ void pain_smooth(){
 void LCD_reset(){
     xPos = 20; // for analog readings 
     tft.fillScreen(ST77XX_BLACK); // black screen
-    testdrawtext("Rebound Tenderness Examination", ST77XX_WHITE); // title
-    tft.setCursor(100, 15); // move cursor for legend
+    testdrawtext("Rebound Tenderness\nExamination", ST77XX_WHITE); // title
+    tft.setCursor(80, 15); // move cursor for legend
     tft.setTextColor(ST7735_MAGENTA);
     tft.println("Pain"); 
-    tft.setCursor(100, 15); // shift down for legend part 2
+    tft.setCursor(80, 30); // shift down for legend part 2
     tft.setTextColor(ST7735_CYAN);
     tft.println("Pressure");
     tft.setCursor(20, 140); // move cursor for x-axis
     tft.drawLine(20, 140, 120, 140, ST77XX_WHITE); // x-axis
     tft.setCursor(20, 140); // move cursor for y-axis
     tft.drawLine(20, 140, 20, 40, ST77XX_WHITE); // y-axis
-    tft.setCursor(50, 154); // move for x-axis label
+    tft.setCursor(50, 150); // move for x-axis label
     tft.setTextColor(ST77XX_WHITE);
     tft.println("Time"); // x-axis label
-
-
 }
