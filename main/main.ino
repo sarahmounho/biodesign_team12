@@ -19,7 +19,7 @@ Description:
 // I/O definitions
 // 14 pins available
 
-const int on_led = A2; // A2 for on/off LED (red)
+const int on_led = 23; // A2 for on/off LED (red); new GPIO 23
 const int exam_button = 2; // GPIO 2 for exam start/stop button
 const int exam_led_red = A3; // A3 for exam start/in progress/stop LED
 const int exam_led_blue = A4; // A4 for exam start/in progress/stop LED
