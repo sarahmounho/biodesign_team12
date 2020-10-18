@@ -28,7 +28,7 @@ const int potentiometer = 12; // A1 for potentiometer; new 12
 //const int relay1 = 12; // GPIO 12 for linear actuator
 //const int relay2 = 13; // GPIO 13 for linear actuator
 const int enable = 11; // GPIO 11 for linear actuator enable
-const int FSR = 0; // GPIO 0 for FSR (pressure sensor)
+const int FSR = 25; // GPIO 0 for FSR (pressure sensor); new 25
 
 
 #define TFT_CS        15
