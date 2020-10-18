@@ -82,7 +82,7 @@ void setup(){
     digitalWrite(relay2, LOW); // turn off relay for linear actuator
 
     // potentiometer
-    Serial.begin(9600);
+    Serial.begin(115200);
 
     // LCD
     tft.initR(INITR_BLACKTAB); // Init ST7735S chip, black tab
