@@ -52,7 +52,7 @@ int prevYPressure = 140;
 int exam_len = 0; 
 
 // Smoothing for slide potentiometer
-const int numReadingsPain = 1000;
+const int numReadingsPain = 10;
 int readingsPain[numReadingsPain]; // array to store readings from the analog INPUT
 int readIdxPain = 0; // idx of current reading
 int totalPain = 0; // running total
@@ -68,8 +68,12 @@ void setup(){
     pinMode(exam_led_blue, OUTPUT); // define exam LED as OUTPUT
     pinMode(exam_led_green, OUTPUT); // define exam LED as OUTPUT
     pinMode(potentiometer, INPUT); // define potentiometer pin as INPUT
-    pinMode(relay1, OUTPUT); // define relay1 as OUTPUT
-    pinMode(relay2, OUTPUT); // define relay2 as OUTPUT
+    //pinMode(relay1, OUTPUT); // define relay1 as OUTPUT
+    //pinMode(relay2, OUTPUT); // define relay2 as OUTPUT
+    ledcSetup(0, 5000, 8); 
+    ledcAttatchPin(relay1, 0);
+    ledcSetup(1, 5000, 8);
+    ledcAttatchPin(relay2, 1);
     pinMode(enable, OUTPUT); // define enable pin as OUTPUT
 
     // initial writes
@@ -78,8 +82,8 @@ void setup(){
     digitalWrite(exam_led_blue, LOW); // turn LED off to start
     digitalWrite(exam_led_green, LOW); // turn LED off to start
     digitalWrite(enable, HIGH); // turn enable HIGH for linear actuator
-    digitalWrite(relay1, LOW); // turn off relay for linear actuator
-    digitalWrite(relay2, LOW); // turn off relay for linear actuator
+    //digitalWrite(relay1, LOW); // turn off relay for linear actuator
+    //digitalWrite(relay2, LOW); // turn off relay for linear actuator
 
     // potentiometer
     Serial.begin(115200);
@@ -94,7 +98,7 @@ void setup(){
 
     // initialize all the readings to 0 for pain:
     for (int thisReadingPain = 0; thisReadingPain < numReadingsPain; thisReadingPain++) {
-        readingsPain[thisReadingPain] = 0;
+        readingsPain[thisReadingPain] = 40;
   }
 
 }
@@ -141,8 +145,8 @@ void loop() {
 void RGB_color(int red_light_value, int green_light_value, int blue_light_value)
  {
   digitalWrite(exam_led_red, red_light_value);
-  digitalWrite(exam_led_blue, green_light_value);
-  digitalWrite(exam_led_green, blue_light_value);
+  digitalWrite(exam_led_blue, blue_light_value);
+  digitalWrite(exam_led_green, green_light_value);
 }
 
 
@@ -155,18 +159,25 @@ void testdrawtext(char *text, uint16_t color) {
 
 //Helper functions
 void extendActuator() {
-    digitalWrite(relay1, HIGH);
+    //digitalWrite(relay1, HIGH);
+    ledcWrite(0, 127);
+    delay(15);
+    }
     digitalWrite(relay2, LOW);
 }
 
 void retractActuator() {
     digitalWrite(relay1, LOW);
-    digitalWrite(relay2, HIGH);
+    //digitalWrite(relay2, HIGH);
+    ledcWrite(1, 127);
+    delay(15);
+    }
 }
 
 void stopActuator() {
     digitalWrite(relay1, LOW);
     digitalWrite(relay2, LOW);
+
 }
 
 void actuator_exam(){
@@ -204,12 +215,12 @@ void fsr_exam(){
     int fsrVoltage = map(fsrReading, 0, adcRange, 0, 3300);
     // Graph on LCD
     int graphHeightFSR = map(fsrVoltage, 0, adcRange, 40, tft.height()-20);
-    tft.drawPixel(xPos, tft.height() - graphHeightFSR, ST7735_CYAN);
+    tft.drawPixel(xPos, tft.height() - graphHeightFSR + 20, ST7735_CYAN);
     if (xPos > 20){
-        tft.drawLine(prevXPressure, prevYPressure, xPos, tft.height() - graphHeightFSR, ST7735_CYAN);
+        tft.drawLine(prevXPressure, prevYPressure, xPos, tft.height() - graphHeightFSR + 20, ST7735_CYAN);
     }
     prevXPressure = xPos;
-    prevYPressure = (tft.height() - graphHeightFSR);
+    prevYPressure = (tft.height() - graphHeightFSR + 20);
 
     // Probably don't include in test, but should be included in validation
 //    unsigned long fsrResistance = 3300 - fsrVoltage; // fsrVoltage in mV
@@ -261,20 +272,15 @@ void pain_smooth(){
     Serial.println(avgPain); // print pain level on screen
 
     // Graph on LCD
-    int graphHeight = map(avgPain, 0, adcRange, 40, tft.height()-20);
-    tft.drawPixel(xPos, tft.height() - graphHeight, ST7735_MAGENTA);
+    int graphHeight = map(avgPain, 0, adcRange, 40, tft.height() - 20);
+    tft.drawPixel(xPos, tft.height() + 20 - graphHeight, ST7735_MAGENTA);
     if (xPos > 20) {
-        tft.drawLine(prevXPain, prevYPain, xPos, tft.height() - graphHeight, ST7735_MAGENTA);
+        tft.drawLine(prevXPain, prevYPain, xPos, tft.height() + 20 - graphHeight, ST7735_MAGENTA);
     }
     prevXPain = xPos;
-    prevYPain = (tft.height() - graphHeight);
-    if (xPos >= 120) {
-        // Restart, ran out of screen space
-        LCD_reset(); 
-    } 
-    else {
-        xPos++; // move on to next position
-    }
+    prevYPain = (tft.height() + 20 - graphHeight);
+
+    xPos++; // move on to next position
 }
 void LCD_reset(){
     xPos = 20; // for analog readings 
@@ -286,10 +292,10 @@ void LCD_reset(){
     tft.setCursor(80, 30); // shift down for legend part 2
     tft.setTextColor(ST7735_CYAN);
     tft.println("Pressure");
-    tft.setCursor(20, 140); // move cursor for x-axis
-    tft.drawLine(20, 140, 120, 140, ST77XX_WHITE); // x-axis
+    tft.setCursor(20, 145); // move cursor for x-axis
+    tft.drawLine(20, 145, 120, 145, ST77XX_WHITE); // x-axis
     tft.setCursor(20, 140); // move cursor for y-axis
-    tft.drawLine(20, 140, 20, 40, ST77XX_WHITE); // y-axis
+    tft.drawLine(20, 145, 20, 40, ST77XX_WHITE); // y-axis
     tft.setCursor(50, 150); // move for x-axis label
     tft.setTextColor(ST77XX_WHITE);
     tft.println("Time"); // x-axis label
