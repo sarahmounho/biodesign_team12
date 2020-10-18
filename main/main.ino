@@ -82,7 +82,7 @@ void setup(){
     digitalWrite(relay2, LOW); // turn off relay for linear actuator
 
     // potentiometer
-    Serial.begin(9600);
+    Serial.begin(115200);
 
     // LCD
     tft.initR(INITR_BLACKTAB); // Init ST7735S chip, black tab
@@ -212,28 +212,28 @@ void fsr_exam(){
     prevYPressure = (tft.height() - graphHeightFSR);
 
     // Probably don't include in test, but should be included in validation
-    unsigned long fsrResistance = 3300 - fsrVoltage; // fsrVoltage in mV
-    fsrResistance *= 10000; // 10K resistor
-    if (fsrVoltage == 0){
-        fsrVoltage = 0.00001; // avoid divide by zero errors
-    }
-    fsrResistance /= fsrVoltage; 
-    unsigned long fsrConductance = 1000000; // measured in microhms
-    fsrConductance /= fsrResistance; 
-    
-    // Use the two FSR guide graphs to approximate the force
-    if (fsrConductance <= 1000) {
-        long fsrForce = fsrConductance / 80;
-        Serial.print("Force in Newtons: ");
-        Serial.println(fsrForce);     
-    } else {
-        long fsrForce = fsrConductance - 1000;
-        fsrForce /= 30;
-        Serial.print("Force in Newtons: ");
-        Serial.println(fsrForce);
-        tft.fillScreen(ST77XX_BLACK);
-        tft.print(fsrForce, ST77XX_WHITE);
-    }        
+//    unsigned long fsrResistance = 3300 - fsrVoltage; // fsrVoltage in mV
+//    fsrResistance *= 10000; // 10K resistor
+//    if (fsrVoltage == 0){
+//        fsrVoltage = 0.00001; // avoid divide by zero errors
+//    }
+//    fsrResistance /= fsrVoltage; 
+//    unsigned long fsrConductance = 1000000; // measured in microhms
+//    fsrConductance /= fsrResistance; 
+//    
+//    // Use the two FSR guide graphs to approximate the force
+//    if (fsrConductance <= 1000) {
+//        long fsrForce = fsrConductance / 80;
+//        Serial.print("Force in Newtons: ");
+//        Serial.println(fsrForce);     
+//    } else {
+//        long fsrForce = fsrConductance - 1000;
+//        fsrForce /= 30;
+//        Serial.print("Force in Newtons: ");
+//        Serial.println(fsrForce);
+//        tft.fillScreen(ST77XX_BLACK);
+//        tft.print(fsrForce, ST77XX_WHITE);
+//    }        
 }
 
 void pain_smooth(){
