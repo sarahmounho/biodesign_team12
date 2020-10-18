@@ -71,9 +71,9 @@ void setup(){
     //pinMode(relay1, OUTPUT); // define relay1 as OUTPUT
     //pinMode(relay2, OUTPUT); // define relay2 as OUTPUT
     ledcSetup(0, 5000, 8); 
-    ledcAttatchPin(relay1, 0);
+    ledcAttachPin(relay1, 0);
     ledcSetup(1, 5000, 8);
-    ledcAttatchPin(relay2, 1);
+    ledcAttachPin(relay2, 1);
     pinMode(enable, OUTPUT); // define enable pin as OUTPUT
 
     // initial writes
@@ -162,7 +162,6 @@ void extendActuator() {
     //digitalWrite(relay1, HIGH);
     ledcWrite(0, 127);
     delay(15);
-    }
     digitalWrite(relay2, LOW);
 }
 
@@ -171,7 +170,6 @@ void retractActuator() {
     //digitalWrite(relay2, HIGH);
     ledcWrite(1, 127);
     delay(15);
-    }
 }
 
 void stopActuator() {
