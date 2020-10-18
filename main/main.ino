@@ -41,6 +41,7 @@ int exam_flag = 0; // start/in progress/stop LED
 
 // Plotting set up
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_MOSI, TFT_SCLK, TFT_RST);
+int adcRange = 4095; // ADC range on board
 int xPos = 20; //starting graph position
 int prevXPain = 20; 
 int prevYPain = 140;
@@ -56,6 +57,8 @@ int readingsPain[numReadingsPain]; // array to store readings from the analog IN
 int readIdxPain = 0; // idx of current reading
 int totalPain = 0; // running total
 int avgPain = 0; // the average
+
+
 
 void setup(){
     // pinMode definitions
@@ -198,10 +201,10 @@ void fsr_exam(){
     int fsrReading = analogRead(FSR); // read pressure level
     Serial.println("Analog reading = ");
     // analog voltage reading ranges from about 0 to 1023 which maps to 0V to 3.3V (= 3300 mV)
-    int fsrVoltage = map(fsrReading, 0, 1023, 0, 3300);
+    int fsrVoltage = map(fsrReading, 0, adcRange, 0, 3300);
     // Graph on LCD
-    int graphHeightFSR = map(fsrVoltage, 0, 1023,40, tft.height()-20);
-    tft.drawPixel(xPos, tft.height() - 20 - graphHeightFSR, ST7735_CYAN);
+    int graphHeightFSR = map(fsrVoltage, 0, adcRange, 40, tft.height()-20);
+    tft.drawPixel(xPos, tft.height() - graphHeightFSR, ST7735_CYAN);
     if (xPos > 20){
         tft.drawLine(prevXPressure, prevYPressure, xPos, tft.height() - graphHeightFSR, ST7735_CYAN);
     }
@@ -211,17 +214,20 @@ void fsr_exam(){
     // Probably don't include in test, but should be included in validation
     unsigned long fsrResistance = 3300 - fsrVoltage; // fsrVoltage in mV
     fsrResistance *= 10000; // 10K resistor
+    if (fsrVoltage == 0){
+        fsrVoltage = 0.00001; // avoid divide by zero errors
+    }
     fsrResistance /= fsrVoltage; 
     unsigned long fsrConductance = 1000000; // measured in microhms
     fsrConductance /= fsrResistance; 
     
     // Use the two FSR guide graphs to approximate the force
     if (fsrConductance <= 1000) {
-        int fsrForce = fsrConductance / 80;
+        long fsrForce = fsrConductance / 80;
         Serial.print("Force in Newtons: ");
         Serial.println(fsrForce);     
     } else {
-        int fsrForce = fsrConductance - 1000;
+        long fsrForce = fsrConductance - 1000;
         fsrForce /= 30;
         Serial.print("Force in Newtons: ");
         Serial.println(fsrForce);
@@ -255,13 +261,13 @@ void pain_smooth(){
     Serial.println(avgPain); // print pain level on screen
 
     // Graph on LCD
-    int graphHeight = map(avgPain,0,1023, 40, tft.height()-20);
+    int graphHeight = map(avgPain, 0, adcRange, 40, tft.height()-20);
     tft.drawPixel(xPos, tft.height() - graphHeight, ST7735_MAGENTA);
     if (xPos > 20) {
-        tft.drawLine(prevXPain, prevYPain, xPos, tft.height() - 20 - graphHeight, ST7735_MAGENTA);
+        tft.drawLine(prevXPain, prevYPain, xPos, tft.height() - graphHeight, ST7735_MAGENTA);
     }
     prevXPressure = xPos;
-    prevYPressure = (tft.height() - 20 - graphHeight);
+    prevYPressure = (tft.height() - graphHeight);
     if (xPos >= 160) {
         // Restart, ran out of screen space
         LCD_reset(); 
