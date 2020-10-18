@@ -20,7 +20,7 @@ Description:
 // 14 pins available
 
 const int on_led = 23; // A2 for on/off LED (red); new GPIO 23
-const int exam_button = 2; // GPIO 2 for exam start/stop button
+const int exam_button = 22; // GPIO 2 for exam start/stop button; new 22
 const int exam_led_red = 18; // A3 for exam start/in progress/stop LED; new 18
 const int exam_led_blue = 21; // A4 for exam start/in progress/stop LED; new 21
 const int exam_led_green = 19; // A5 for exam start/in progress/stop LED; new 19
@@ -31,11 +31,11 @@ const int enable = 11; // GPIO 11 for linear actuator enable
 const int FSR = 25; // GPIO 0 for FSR (pressure sensor); new 25
 
 
-#define TFT_CS        15
-#define TFT_RST       16 // Or set to -1 and connect to Arduino RESET pin
-#define TFT_DC        17
-#define TFT_MOSI 13 // Data out
-#define TFT_SCLK 14 // Clock out
+#define TFT_CS        15 // new
+#define TFT_RST       16 // new 
+#define TFT_DC        17 // new
+#define TFT_MOSI 13 // Data out; new
+#define TFT_SCLK 14 // Clock out; new
 
 int exam_flag = 0; // start/in progress/stop LED
 
