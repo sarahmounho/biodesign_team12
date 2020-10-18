@@ -24,9 +24,9 @@ const int exam_button = 2; // GPIO 2 for exam start/stop button
 const int exam_led_red = A3; // A3 for exam start/in progress/stop LED
 const int exam_led_blue = A4; // A4 for exam start/in progress/stop LED
 const int exam_led_green = A5; // A5 for exam start/in progress/stop LED
-const int potentiometer = A1; // A1 for potentiometer
-const int relay1 = 12; // GPIO 12 for linear actuator
-const int relay2 = 13; // GPIO 13 for linear actuator
+const int potentiometer = 12; // A1 for potentiometer; new 12
+//const int relay1 = 12; // GPIO 12 for linear actuator
+//const int relay2 = 13; // GPIO 13 for linear actuator
 const int enable = 11; // GPIO 11 for linear actuator enable
 const int FSR = 0; // GPIO 0 for FSR (pressure sensor)
 
