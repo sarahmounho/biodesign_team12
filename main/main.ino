@@ -25,9 +25,9 @@ const int exam_led_red = 18; // A3 for exam start/in progress/stop LED; new 18
 const int exam_led_blue = 21; // A4 for exam start/in progress/stop LED; new 21
 const int exam_led_green = 19; // A5 for exam start/in progress/stop LED; new 19
 const int potentiometer = 12; // A1 for potentiometer; new 12
-//const int relay1 = 12; // GPIO 12 for linear actuator
-//const int relay2 = 13; // GPIO 13 for linear actuator
-const int enable = 11; // GPIO 11 for linear actuator enable
+const int relay1 = 26; // GPIO 12 for linear actuator; new 26
+const int relay2 = 27; // GPIO 13 for linear actuator; new 27
+const int enable = 32; // GPIO 11 for linear actuator enable; new 32
 const int FSR = 25; // GPIO 0 for FSR (pressure sensor); new 25
 
 
@@ -266,9 +266,9 @@ void pain_smooth(){
     if (xPos > 20) {
         tft.drawLine(prevXPain, prevYPain, xPos, tft.height() - graphHeight, ST7735_MAGENTA);
     }
-    prevXPressure = xPos;
-    prevYPressure = (tft.height() - graphHeight);
-    if (xPos >= 160) {
+    prevXPain = xPos;
+    prevYPain = (tft.height() - graphHeight);
+    if (xPos >= 120) {
         // Restart, ran out of screen space
         LCD_reset(); 
     } 
