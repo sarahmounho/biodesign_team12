@@ -211,17 +211,20 @@ void fsr_exam(){
     // Probably don't include in test, but should be included in validation
     unsigned long fsrResistance = 3300 - fsrVoltage; // fsrVoltage in mV
     fsrResistance *= 10000; // 10K resistor
+    if (fsrVoltage == 0){
+        fsrVoltage = 0.00001; // avoid divide by zero errors
+    }
     fsrResistance /= fsrVoltage; 
     unsigned long fsrConductance = 1000000; // measured in microhms
     fsrConductance /= fsrResistance; 
     
     // Use the two FSR guide graphs to approximate the force
     if (fsrConductance <= 1000) {
-        int fsrForce = fsrConductance / 80;
+        long fsrForce = fsrConductance / 80;
         Serial.print("Force in Newtons: ");
         Serial.println(fsrForce);     
     } else {
-        int fsrForce = fsrConductance - 1000;
+        long fsrForce = fsrConductance - 1000;
         fsrForce /= 30;
         Serial.print("Force in Newtons: ");
         Serial.println(fsrForce);
