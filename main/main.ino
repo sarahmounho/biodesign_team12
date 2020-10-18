@@ -21,9 +21,9 @@ Description:
 
 const int on_led = 23; // A2 for on/off LED (red); new GPIO 23
 const int exam_button = 2; // GPIO 2 for exam start/stop button
-const int exam_led_red = A3; // A3 for exam start/in progress/stop LED
-const int exam_led_blue = A4; // A4 for exam start/in progress/stop LED
-const int exam_led_green = A5; // A5 for exam start/in progress/stop LED
+const int exam_led_red = 18; // A3 for exam start/in progress/stop LED; new 18
+const int exam_led_blue = 21; // A4 for exam start/in progress/stop LED; new 21
+const int exam_led_green = 19; // A5 for exam start/in progress/stop LED; new 19
 const int potentiometer = 12; // A1 for potentiometer; new 12
 //const int relay1 = 12; // GPIO 12 for linear actuator
 //const int relay2 = 13; // GPIO 13 for linear actuator
