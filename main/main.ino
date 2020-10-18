@@ -31,14 +31,16 @@ const int enable = 11; // GPIO 11 for linear actuator enable
 const int FSR = 0; // GPIO 0 for FSR (pressure sensor)
 
 
-#define TFT_CS        10
-#define TFT_RST        9 // Or set to -1 and connect to Arduino RESET pin
-#define TFT_DC         7
+#define TFT_CS        15
+#define TFT_RST       16 // Or set to -1 and connect to Arduino RESET pin
+#define TFT_DC        17
+#define TFT_MOSI 13 // Data out
+#define TFT_SCLK 14 // Clock out
 
 int exam_flag = 0; // start/in progress/stop LED
 
 // Plotting set up
-Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
+Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_MOSI, TFT_SCLK, TFT_RST);
 int xPos = 20; //starting graph position
 int prevXPain = 20; 
 int prevYPain = 140;
